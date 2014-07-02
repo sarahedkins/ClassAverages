@@ -1,0 +1,7 @@
+Sarah 90 95 80 92 97
+Robert 50 47 68 34 54
+Joseph 78 62 80 66 69
+Getrude 30 54 28 10 16
+Mary 60 54 57 62 70
+Elijah  10 7 10 5 20
+Josephine 100 98 99 100 96
