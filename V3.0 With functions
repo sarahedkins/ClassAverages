@@ -1,0 +1,179 @@
+// lab #6
+
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <iomanip>
+
+using namespace std;
+
+// Function Prototypes
+void getMessage (char letter);
+float getAverage (int grades[], const int num);
+float getAverageOfAverages (float array1[], const int num);
+void compareNums (float num1, float num2, float &bigger_num);
+char getLetterGrade (float gradeValue);
+
+int main()
+{
+	// open file and check that it opens
+	ifstream infile;
+	infile.open("student_test_scores.txt");
+
+	if (!infile)
+	{
+		cout << "Error opening file.";
+		system("pause");
+		return 0;
+	}
+
+	// declarations & initialization
+	const int n = 5; // number of tests taken
+	int i = 0;  // for loop index
+	int tests[n]; // array of student grades
+	int test_sum = 0;
+	float avg = 0.0, w_avg = 0.0, final_avg = 0.0; // average, weighted average, and final average
+	const float w1 = .20, w2 = .25, w3 = .30; // weights for weighted average
+	char letterGrade = 'X';
+	const int max_num_Students = 35; // max number of students in a class
+	string name = "";
+	float class_average = 0.0;
+	float averages[max_num_Students]; // array of all the final averages
+	int num_Students = 0; // keeps track of how many students are in the class
+	float avg_sum = 0.0;
+
+	// set floats to print to two decimal places
+	cout << fixed << setprecision(2);
+
+	// output test-weights
+	cout << "Grading Policy:\n"
+	<< "Tests 1 and 3 are weighted 20%, \nTests 2 and 4 are weighted 25%, \nand Test 5 is weighted 30%." << endl << endl;
+
+	// set up page with headers 
+	cout << "Name " << setw(14) << "Scores " << setw(18) << "Avg " << setw(9) << "W.Avg" << setw(10) << "Grade " << setw(9) << "Message " << endl;
+ 
+	do
+	{
+		// read in and print out name
+		infile >> name;
+		cout << setw(10) << setfill(' ') << left << name;
+
+		// read in and print out test scores 
+		cout << setfill(' ') << right;
+		for (i = 0; i < n; i++)
+		{
+			infile >> tests[i];
+			cout << setw(4) << setfill(' ') << tests[i];
+		}
+
+		// print average
+		cout << setw(8) << getAverage(tests, n) << " ";
+
+		// calculate and print the weighted average
+		w_avg = (tests[0] * w1) + (tests[1] * w2) + (tests[2] * w1) + (tests[3] * w2) + (tests[4] * w3);
+		cout << setw(8) << w_avg;
+
+		// compare average and weighted average
+		compareNums(w_avg, avg, final_avg);
+
+		// store final average of each student in the class
+		averages[num_Students] = final_avg;
+		num_Students++;
+
+		// print letter grade
+		letterGrade = getLetterGrade(final_avg);
+		cout << setw(6) << letterGrade << setw(4) << " "; 
+
+		// get and print message
+		getMessage(letterGrade);
+		cout << endl;
+
+		// rest variable for next iteration
+		test_sum = 0;
+
+	} while (!infile.eof());
+
+	// print class average
+	cout << endl << "Class Average : " << getAverageOfAverages(averages, num_Students) << endl;
+
+	system("pause");
+	return 0;
+} // end main
+
+// function definitions
+
+	/* Given a char letter grade, use a switch to determine message, and print message */
+	void getMessage (char letter)
+	{
+		string message = "No comment.";
+
+		switch (letter) {
+		case 'A': message = "Excellent work!! ";
+			break;
+		case 'B': message = "Nicely done. ";
+			break;
+		case 'C':
+		case 'D':
+			message = "You could do better. ";
+			break;
+		case 'F': message = "You failed. ";
+			break;
+		default: message = "Invalid grade. ";
+		}
+
+		cout << message;
+	}
+
+		/* Given an array of ints and 
+	   constant int number of numbers, add them
+	   together and divide by the number of numbers.
+	   Return the result. */
+		float getAverage (int array1[], const int num)
+		{
+		int i = 0, total = 0;
+		float average = 0.0;
+		for (i = 0; i < num; i++)
+			total += array1[i];
+		average = total / num;
+		return average;
+		}
+
+		/* Given an array of floats and 
+	   constant int number of numbers, add them
+	   together and divide by the number of numbers.
+	   Return the result. */
+		float getAverageOfAverages (float array1[], const int num)
+		{
+		int i = 0;
+		float total = 0, average = 0.0;
+		for (i = 0; i < num; i++)
+			total += array1[i];
+		average = total / num;
+		return average;
+		}
+
+		/* This function compares two float numbers and sets
+		the reference parameter to contain the higher value. */
+		void compareNums (float num1, float num2, float &bigger_num)
+		{
+			if (num1 >= num2)
+				bigger_num = num1;
+		else bigger_num = num2;
+		}
+
+		/* Given a float grade value, returns the
+		corresponding char letter grade. */
+		char getLetterGrade (float gradeValue)
+		{
+		char grade = 'X';
+		if (gradeValue >= 90)
+			grade = 'A';
+		else if (gradeValue >= 80)
+			grade = 'B';
+		else if (gradeValue >= 70)
+			grade = 'C';
+		else if (gradeValue >= 60)
+			grade = 'D';
+		else grade = 'F';
+		return grade;
+		}
